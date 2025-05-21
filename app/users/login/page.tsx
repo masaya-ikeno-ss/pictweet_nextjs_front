@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import Header from "@/app/_components/Header"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { login } from "@/app/api/users"
+import { useAuthContext } from "@/app/context/AuthContext"
 
 interface LoginCredentials {
   email: string
@@ -14,10 +14,11 @@ const LoginPage = () => {
   const router = useRouter()
   const { register, handleSubmit, formState: { errors } } = useForm<LoginCredentials>()
   const [errorMessages, setErrorMessages] = useState<string[]>([])
+  const { login } = useAuthContext()
 
   const onSubmit = async (formData: LoginCredentials) => {
     try {
-      await login({ email: formData.email, password: formData.password });
+      await login(formData.email, formData.password)
       router.push('/');
     } catch (error) {
       setErrorMessages([error instanceof Error ? error.message : 'エラーが発生しました']);

@@ -2,10 +2,11 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FormEvent } from 'react'
-import { logout } from '../api/users'
+import { useAuthContext } from '../context/AuthContext'
 
 const Header = () => {
   const router = useRouter()
+  const { user, logout } = useAuthContext()
 
   const handleLogout = async (e: FormEvent) => {
     e.preventDefault()
@@ -22,9 +23,10 @@ const Header = () => {
     <header className="header">
       <div className="header__bar row">
         <h1 className="grid-6"><Link href="/">PicTweet</Link></h1>
-        <div className="user_nav grid-6">
+        {user?.isAuthenticated ? (
+          <div className="user_nav grid-6">
           <span>
-            <Link href={`/`}>{"ユーザー名"}</Link>
+            <div>{user.nickname}</div>
             <ul className="user__info">
               <li>
                 <Link href={`/`}>マイページ</Link>
@@ -36,10 +38,12 @@ const Header = () => {
           </span>
           <Link href="/" className="post">投稿する</Link>
         </div>
-        <div className="grid-6">
+        ) : (
+          <div className="grid-6">
           <Link href="/users/sign_up" className="post">新規登録</Link>
           <Link href="/users/login" className="post">ログイン</Link>
         </div>
+        )}
       </div>
    </header>
   )
