@@ -38,7 +38,7 @@ const Header = () => {
               </li>
             </ul>
           </span>
-          <Link href="/" className="post">投稿する</Link>
+          <Link href="/tweets/new" className="post">投稿する</Link>
         </div>
         ) : (
           <div className="grid-6">
