@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { login as apiLogin, logout as apiLogout } from '@/app/api/users'
 
 type User = {
@@ -14,12 +14,30 @@ type AuthContextType = {
   setUser: React.Dispatch<React.SetStateAction<User>>
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
+  isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        if (typeof parsedUser === 'object' && parsedUser !== null 
+            && 'id' in parsedUser && 'nickname' in parsedUser && 'isAuthenticated' in parsedUser) {
+          setUser(parsedUser as User);
+        }
+      } catch (error) {
+        console.error('Error parsing stored user data:', error);
+      }
+    }
+    setIsLoading(false)
+  }, [])
 
   const login = async (email: string, password: string) => {
     try {
@@ -36,6 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await apiLogout();
       setUser(null);
+      localStorage.removeItem("user")
     } catch (error) {
       console.error('Logout error:', error);
       throw error;
@@ -43,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   )

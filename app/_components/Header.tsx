@@ -6,7 +6,7 @@ import { useAuthContext } from '../context/AuthContext'
 
 const Header = () => {
   const router = useRouter()
-  const { user, logout } = useAuthContext()
+  const { user, logout, isLoading } = useAuthContext()
 
   const handleLogout = async (e: FormEvent) => {
     e.preventDefault()
@@ -23,7 +23,9 @@ const Header = () => {
     <header className="header">
       <div className="header__bar row">
         <h1 className="grid-6"><Link href="/">PicTweet</Link></h1>
-        {user?.isAuthenticated ? (
+        {isLoading ? (
+          <div className="loading">Loading...</div>
+        ) : user?.isAuthenticated ? (
           <div className="user_nav grid-6">
           <span>
             <div>{user.nickname}</div>
