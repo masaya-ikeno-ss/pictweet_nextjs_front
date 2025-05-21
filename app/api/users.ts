@@ -56,3 +56,14 @@ export const login = async (credentials: LoginCredentials): Promise<UserResponse
     throw error;
   }
 }
+
+export const logout = async (): Promise<void> => {
+  try {
+    await api.post('/logout');
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Logout error:', error.response?.data);
+      throw new Error('ログアウトに失敗しました');
+    }
+  }
+}

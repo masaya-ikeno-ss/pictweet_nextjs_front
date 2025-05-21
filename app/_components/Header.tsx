@@ -1,9 +1,21 @@
 'use client'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { FormEvent } from 'react'
+import { logout } from '../api/users'
 
 const Header = () => {
-  const handleLogout = () => {
-    // ログアウトボタンが押された時の処理
+  const router = useRouter()
+
+  const handleLogout = async (e: FormEvent) => {
+    e.preventDefault()
+    try {
+      await logout()
+      router.push('/')
+    } catch (error) {
+      console.error('Logout failed:', error)
+      alert('ログアウトに失敗しました。')
+    }
   }
 
   return (
