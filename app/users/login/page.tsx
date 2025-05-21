@@ -1,6 +1,9 @@
 'use client'
 import { useForm } from "react-hook-form"
 import Header from "@/app/_components/Header"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { login } from "@/app/api/users"
 
 interface LoginCredentials {
   email: string
@@ -8,10 +11,17 @@ interface LoginCredentials {
 }
 
 const LoginPage = () => {
+  const router = useRouter()
   const { register, handleSubmit, formState: { errors } } = useForm<LoginCredentials>()
+  const [errorMessages, setErrorMessages] = useState<string[]>([])
 
-  const onSubmit = (FormData: LoginCredentials) => {
-    // Log inをクリックしたときの処理
+  const onSubmit = async (formData: LoginCredentials) => {
+    try {
+      await login({ email: formData.email, password: formData.password });
+      router.push('/');
+    } catch (error) {
+      setErrorMessages([error instanceof Error ? error.message : 'エラーが発生しました']);
+    }
   }
 
   return (
@@ -20,6 +30,9 @@ const LoginPage = () => {
       <div className="contents row">
         <div className="container">
           <h2>Log in</h2>
+          {errorMessages.map((error, index) => (
+            <div key={index} className="error-message">{error}</div>
+          ))}
 
           <form onSubmit={handleSubmit(onSubmit)} className="new_user">
             <div className="field">
