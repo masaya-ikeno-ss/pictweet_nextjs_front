@@ -1,3 +1,4 @@
+import { AuthProvider } from './context/AuthContext';
 import './styles/style.css'
 
 export const metadata = {
@@ -8,7 +9,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja">
       <body>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

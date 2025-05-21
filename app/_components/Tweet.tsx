@@ -1,12 +1,14 @@
 "use client"
 import Link from "next/link"
 import { TweetData } from "../_interfaces/TweetData"
+import { useAuthContext } from "../context/AuthContext"
 
 interface TweetProps {
   tweet: TweetData
 }
 
 const Tweet = ({ tweet }: TweetProps) => {
+  const { user } = useAuthContext()
   return (
     <div className="content_post" style={{ backgroundImage: `url(${tweet.image})` }}>
       <div className="more">
@@ -15,14 +17,18 @@ const Tweet = ({ tweet }: TweetProps) => {
           <li>
           <Link href={`/`}>詳細</Link>
           </li>
-          <li>
-            <Link href={`/`} className="update_btn">編集</Link>
-          </li>
-          <li>
-            <form action={`/`} method="post">
-              <input type="submit" className="delete_btn" value="削除" />
-            </form>
-          </li>
+          { user?.isAuthenticated && user.id == tweet.user.id ? (
+            <>
+              <li>
+                <Link href={`/`} className="update_btn">編集</Link>
+              </li>
+              <li>
+                <form action={`/`} method="post">
+                  <input type="submit" className="delete_btn" value="削除" />
+                </form>
+              </li>
+            </>
+          ) : null }
         </ul>
       </div>
 
