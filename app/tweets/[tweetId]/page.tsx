@@ -7,6 +7,14 @@ import Link from 'next/link'
 import { notFound, useParams, useRouter } from 'next/navigation'
 import { FormEvent, useEffect, useState } from 'react'
 import { deleteTweet, findTweetById } from '@/app/api/tweets'
+import { CommentData } from '@/app/_interfaces/CommentData'
+import CommentForm from '@/app/_components/CommentForm'
+import CommentList from '@/app/_components/CommentList'
+import { createComment } from '@/app/api/comments'
+
+interface CommentFormData {
+  text: string
+}
 
 const ShowTweetDetailPage = () => {
   const { user } = useAuthContext()
@@ -17,6 +25,9 @@ const ShowTweetDetailPage = () => {
   const [tweet, setTweet] = useState<TweetData | null>(null)
   const [loading, setLoading] = useState(true)
 
+  const [comments, setComments] = useState<CommentData[]>([])
+  const [errorMessages, setErrorMessages] = useState<string[]>([])
+
   useEffect(() => {
     const getTweet = async () => {
       setLoading(true)
@@ -24,6 +35,7 @@ const ShowTweetDetailPage = () => {
         try {
           const response = await findTweetById(Number(tweetId))
           setTweet(response)
+          setComments(response.comments)
         } catch (error) {
           setTweet(null)
           console.error("ツイートの取得に失敗しました：", error)
@@ -41,6 +53,15 @@ const ShowTweetDetailPage = () => {
       router.push("/")
     } catch (error) {
       console.error('ツイートの削除に失敗しました:', error)
+    }
+  }
+
+  const handleCommentSubmit = async (formData: CommentFormData) => {
+    try {
+      const response = await createComment(Number(tweetId), formData)
+      setComments([...comments, response])
+    } catch (error) {
+      setErrorMessages([error instanceof Error ? error.message : "エラーが発生しました"])
     }
   }
 
@@ -79,7 +100,10 @@ const ShowTweetDetailPage = () => {
             </Link>
           </span>
         </div>
-        <p>コメントを表示する場所です</p>
+        <div className='container'>
+          <CommentForm errorMessages={errorMessages} onSubmit={handleCommentSubmit}/>
+          <CommentList comments={comments}/>
+        </div>
       </div>
       <Footer />
     </>
