@@ -2,13 +2,20 @@
 import Link from "next/link"
 import { TweetData } from "../_interfaces/TweetData"
 import { useAuthContext } from "../context/AuthContext"
+import { FormEvent } from "react"
 
 interface TweetProps {
   tweet: TweetData
+  onDeleteTweet: (tweetId: number) => Promise<void>
 }
 
-const Tweet = ({ tweet }: TweetProps) => {
+const Tweet = ({ tweet, onDeleteTweet }: TweetProps) => {
   const { user } = useAuthContext()
+
+  const handleDelete = async (e: FormEvent) => {
+    e.preventDefault()
+    onDeleteTweet(tweet.id)
+  }
   return (
     <div className="content_post" style={{ backgroundImage: `url(${tweet.image})` }}>
       <div className="more">
@@ -23,8 +30,8 @@ const Tweet = ({ tweet }: TweetProps) => {
                 <Link href={`/`} className="update_btn">編集</Link>
               </li>
               <li>
-                <form action={`/`} method="post">
-                  <input type="submit" className="delete_btn" value="削除" />
+                <form onSubmit={handleDelete}>
+                  <input type="submit" className="delete-btn" value="削除" />
                 </form>
               </li>
             </>

@@ -4,12 +4,13 @@ import Footer from '@/app/_components/Footer'
 import { useAuthContext } from '@/app/context/AuthContext'
 import { TweetData } from '@/app/_interfaces/TweetData'
 import Link from 'next/link'
-import { notFound, useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { findTweetById } from '@/app/api/tweets'
+import { notFound, useParams, useRouter } from 'next/navigation'
+import { FormEvent, useEffect, useState } from 'react'
+import { deleteTweet, findTweetById } from '@/app/api/tweets'
 
 const ShowTweetDetailPage = () => {
   const { user } = useAuthContext()
+  const router = useRouter()
 
   const params = useParams()
   const tweetId = params.tweetId
@@ -33,6 +34,16 @@ const ShowTweetDetailPage = () => {
     getTweet()
   }, [tweetId])
 
+  const handleDelete = async (e: FormEvent) => {
+    e.preventDefault()
+    try {
+      await deleteTweet(Number(tweetId))
+      router.push("/")
+    } catch (error) {
+      console.error('ツイートの削除に失敗しました:', error)
+    }
+  }
+
   if (loading) {
     return <div>Loading...</div>
   }
@@ -54,7 +65,7 @@ const ShowTweetDetailPage = () => {
                   <Link href={`/`} className="update-btn">編集</Link>
                 </li>
                 <li>
-                  <form action={`/`} method="post">
+                  <form onSubmit={handleDelete}>
                     <input type="submit" className="delete-btn" value="削除" />
                   </form>
                 </li>
