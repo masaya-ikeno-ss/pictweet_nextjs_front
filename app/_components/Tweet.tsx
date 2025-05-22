@@ -27,7 +27,7 @@ const Tweet = ({ tweet, onDeleteTweet }: TweetProps) => {
           { user?.isAuthenticated && user.id == tweet.user.id ? (
             <>
               <li>
-                <Link href={`/`} className="update_btn">編集</Link>
+                <Link href={`/tweets/${tweet.id}/edit`} className="update-btn">編集</Link>
               </li>
               <li>
                 <form onSubmit={handleDelete}>
