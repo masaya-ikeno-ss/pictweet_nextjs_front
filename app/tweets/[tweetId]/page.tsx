@@ -4,7 +4,7 @@ import Footer from '@/app/_components/Footer'
 import { useAuthContext } from '@/app/context/AuthContext'
 import { TweetData } from '@/app/_interfaces/TweetData'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { notFound, useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { findTweetById } from '@/app/api/tweets'
 
@@ -14,9 +14,11 @@ const ShowTweetDetailPage = () => {
   const params = useParams()
   const tweetId = params.tweetId
   const [tweet, setTweet] = useState<TweetData | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getTweet = async () => {
+      setLoading(true)
       if (tweetId) {
         try {
           const response = await findTweetById(Number(tweetId))
@@ -26,12 +28,17 @@ const ShowTweetDetailPage = () => {
           console.error("ツイートの取得に失敗しました：", error)
         }
       }
+      setLoading(false)
     }
     getTweet()
   }, [tweetId])
 
+  if (loading) {
+    return <div>Loading...</div>
+  }
+  
   if (!tweet) {
-    return null
+    return notFound()
   }
 
   return (
