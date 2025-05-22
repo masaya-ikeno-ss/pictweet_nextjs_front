@@ -4,18 +4,34 @@ import Footer from '@/app/_components/Footer'
 import { useAuthContext } from '@/app/context/AuthContext'
 import { TweetData } from '@/app/_interfaces/TweetData'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { findTweetById } from '@/app/api/tweets'
 
 const ShowTweetDetailPage = () => {
   const { user } = useAuthContext()
 
-  const tweet: TweetData = {
-    id: 1,
-    text: "テキスト",
-    image: "https://tech-master.s3.amazonaws.com/uploads/curriculums/images/Rails1-4/sample.jpg",
-    user: {
-      id: 1,
-      nickname: "テストユーザー"
+  const params = useParams()
+  const tweetId = params.tweetId
+  const [tweet, setTweet] = useState<TweetData | null>(null)
+
+  useEffect(() => {
+    const getTweet = async () => {
+      if (tweetId) {
+        try {
+          const response = await findTweetById(Number(tweetId))
+          setTweet(response)
+        } catch (error) {
+          setTweet(null)
+          console.error("ツイートの取得に失敗しました：", error)
+        }
+      }
     }
+    getTweet()
+  }, [tweetId])
+
+  if (!tweet) {
+    return null
   }
 
   return (

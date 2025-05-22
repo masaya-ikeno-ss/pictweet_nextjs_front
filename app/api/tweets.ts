@@ -32,3 +32,16 @@ export const createTweet = async (tweetForm: { image: string; text: string; }): 
     throw error;
   }
 }
+
+export const findTweetById = async (tweetId: number): Promise<TweetData> => {
+  try {
+    const response = await api.get<TweetData>(`/tweets/${tweetId}`)
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("APIリクエストエラー：", error.response?.data)
+      throw new Error("ツイートの取得に失敗しました")
+    }
+    throw error
+  }
+}
