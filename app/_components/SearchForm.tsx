@@ -4,10 +4,13 @@ import { useForm } from "react-hook-form"
 
 interface SearchFormProps {
   onSearch: (query: string)=> void
+  initialQuery: string
 }
 
-const SearchForm = ({ onSearch }: SearchFormProps) => {
-  const { register, handleSubmit } = useForm<{ searchText: string }>()
+const SearchForm = ({ onSearch, initialQuery }: SearchFormProps) => {
+  const { register, handleSubmit } = useForm<{ searchText: string }>({
+    defaultValues: { searchText: initialQuery }
+  })
 
   const onSubmit = (data: { searchText: string }) => {
     onSearch(data.searchText)

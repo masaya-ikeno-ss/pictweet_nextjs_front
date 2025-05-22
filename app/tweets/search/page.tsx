@@ -6,11 +6,14 @@ import SearchForm from "@/app/_components/SearchForm"
 import TweetList from "@/app/_components/TweetList"
 import { TweetData } from "@/app/_interfaces/TweetData"
 import { deleteTweet } from "@/app/api/tweets"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 
 const SearchPage = () => {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const query = searchParams.get("query") || ""
+
   const [tweets, setTweets] = useState<TweetData[]>([])
 
   const handleDeleteTweet = async (tweetId: number) => {
@@ -23,13 +26,13 @@ const SearchPage = () => {
   }
 
   const handleSearch = (query: string) => {
-    // 検索ボタンを押したときの処理
+    router.push(`/tweets/search?query=${encodeURIComponent(query)}`)
   }
 
   return (
     <>
       <Header />
-      <SearchForm onSearch={handleSearch} />
+      <SearchForm onSearch={handleSearch} initialQuery={query} />
       <div className="contents row">
         <TweetList tweets={tweets} onDeleteTweet={handleDeleteTweet} />
       </div>
