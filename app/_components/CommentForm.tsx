@@ -13,7 +13,7 @@ interface CommentFormProps {
 }
 
 const CommentForm = ({ errorMessages, onSubmit }: CommentFormProps) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<CommentForm>()
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<CommentForm>()
   const { user, isLoading } = useAuthContext()
 
   if (isLoading) {
@@ -24,7 +24,7 @@ const CommentForm = ({ errorMessages, onSubmit }: CommentFormProps) => {
     <>
       {user && user.isAuthenticated ? (
         <div>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit((data: CommentForm)=>{onSubmit(data); reset()})}>
             {errorMessages.map((error, index) => (
               <div key={index} className="error-message">{error}</div>
             ))}
