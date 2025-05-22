@@ -70,3 +70,15 @@ export const updateTweet = async (tweetForm: { image: string; text: string; }, t
     throw error
   }
 }
+
+export const searchTweets = async (query: string): Promise<TweetData[]> => {
+  try {
+    const response = await api.get<TweetData[]>(`/tweets/search?query=${query}`);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error('ツイートの検索に失敗しました');
+    }
+    throw error;
+  }
+}

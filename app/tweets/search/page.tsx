@@ -5,9 +5,9 @@ import Header from "@/app/_components/Header"
 import SearchForm from "@/app/_components/SearchForm"
 import TweetList from "@/app/_components/TweetList"
 import { TweetData } from "@/app/_interfaces/TweetData"
-import { deleteTweet } from "@/app/api/tweets"
+import { deleteTweet, searchTweets } from "@/app/api/tweets"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const SearchPage = () => {
   const router = useRouter()
@@ -15,6 +15,20 @@ const SearchPage = () => {
   const query = searchParams.get("query") || ""
 
   const [tweets, setTweets] = useState<TweetData[]>([])
+
+  useEffect(() => {
+    const fetchTweets = async () => {
+      if (query) {
+        try {
+          const response = await searchTweets(query)
+          setTweets(response)
+        } catch (error) {
+          console.error("ツイートの検索に失敗しました:", error)
+        }
+      }
+    }
+    fetchTweets()
+  }, [query])
 
   const handleDeleteTweet = async (tweetId: number) => {
     try {
