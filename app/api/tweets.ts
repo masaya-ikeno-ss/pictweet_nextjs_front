@@ -21,15 +21,15 @@ export const findAllTweets = async (): Promise<TweetData[]> => {
 
 export const createTweet = async (tweetForm: { image: string; text: string; }): Promise<TweetData> => {
   try {
-    const response = await api.post('/tweets/', tweetForm);
-    return response.data;
+    const response = await api.post('/tweets/', tweetForm)
+    return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('APIリクエストエラー:', error.response?.data);
-      const messages = error.response?.data?.messages;
-      throw new Error(messages ? messages.join(', ') : 'ツイートの作成に失敗しました');
+      console.error('APIリクエストエラー:', error.response?.data)
+      const messages = error.response?.data?.messages
+      throw new Error(messages ? messages.join(', ') : 'ツイートの作成に失敗しました')
     }
-    throw error;
+    throw error
   }
 }
 
@@ -48,11 +48,25 @@ export const findTweetById = async (tweetId: number): Promise<TweetData> => {
 
 export const deleteTweet = async (tweetId: number): Promise<void> => {
   try {
-    api.post(`/tweets/${tweetId}/delete`);
+    api.post(`/tweets/${tweetId}/delete`)
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('APIリクエストエラー:', error.response?.data);
-      throw new Error('ツイートの削除に失敗しました');
+      console.error('APIリクエストエラー:', error.response?.data)
+      throw new Error('ツイートの削除に失敗しました')
     }
+  }
+}
+
+export const updateTweet = async (tweetForm: { image: string; text: string; }, tweetId: number): Promise<TweetData> => {
+  try {
+    const response = await api.post(`/tweets/${tweetId}/update`, tweetForm)
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('APIリクエストエラー:', error.response?.data)
+      const messages = error.response?.data?.messages
+      throw new Error(messages ? messages.join(', ') : 'ツイートの編集に失敗しました')
+    }
+    throw error
   }
 }

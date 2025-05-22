@@ -5,8 +5,9 @@ import Footer from "@/app/_components/Footer"
 import Header from "@/app/_components/Header"
 import TweetForm from "@/app/_components/TweetForm"
 import { TweetData } from "@/app/_interfaces/TweetData"
-import { findTweetById } from "@/app/api/tweets"
-import { notFound, useParams } from "next/navigation"
+import { findTweetById, updateTweet } from "@/app/api/tweets"
+import { notFound, useParams, useRouter } from "next/navigation"
+import { Router } from "next/router"
 import { useEffect, useState } from "react"
 
 interface TweetFormData {
@@ -19,6 +20,8 @@ const EditTweetPage = () => {
   const [formData, setFormData] = useState<TweetFormData>({ text: "", image: "" })
   const [errorMessages, setErrorMessages] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+
+  const router = useRouter()
 
   const params = useParams()
   const tweetId = params.tweetId
@@ -41,8 +44,13 @@ const EditTweetPage = () => {
     fetchTweet()
   }, [tweetId])
 
-  const handleSubmit = async () => {
-    // 編集ボタンを押したときの処理
+  const handleSubmit = async (formData: TweetFormData) => {
+    try {
+      await updateTweet(formData, Number(tweetId))
+      router.push("/")
+    } catch (error) {
+      setErrorMessages([error instanceof Error ? error.message : "エラーが発生しました"])
+    }
   }
 
   if (loading) {
