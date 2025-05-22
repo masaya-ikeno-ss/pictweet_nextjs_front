@@ -5,6 +5,7 @@ import { TweetData } from './_interfaces/TweetData';
 import TweetList from './_components/TweetList';
 import { useEffect, useState } from 'react';
 import { deleteTweet, findAllTweets } from './api/tweets';
+import SearchForm from './_components/SearchForm';
 
 const IndexPage = () => {
   const [tweets, setTweets] = useState<TweetData[]>([])
@@ -29,9 +30,14 @@ const IndexPage = () => {
     }
   }
 
+  const handleSearch = (query: string) => {
+    // 検索ボタンを押したときの処理
+  }
+
   return (
     <div>
       <Header />
+      <SearchForm onSearch={handleSearch} />
       <div className="contents">
         <TweetList tweets={tweets} onDeleteTweet={handleDeleteTweet}/>
       </div>
