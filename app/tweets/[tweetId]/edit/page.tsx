@@ -6,8 +6,8 @@ import Header from "@/app/_components/Header"
 import TweetForm from "@/app/_components/TweetForm"
 import { TweetData } from "@/app/_interfaces/TweetData"
 import { findTweetById, updateTweet } from "@/app/api/tweets"
+import { useAuthContext } from "@/app/context/AuthContext"
 import { notFound, useParams, useRouter } from "next/navigation"
-import { Router } from "next/router"
 import { useEffect, useState } from "react"
 
 interface TweetFormData {
@@ -20,8 +20,8 @@ const EditTweetPage = () => {
   const [formData, setFormData] = useState<TweetFormData>({ text: "", image: "" })
   const [errorMessages, setErrorMessages] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-
   const router = useRouter()
+  const { user, isLoading } = useAuthContext()
 
   const params = useParams()
   const tweetId = params.tweetId
@@ -32,9 +32,12 @@ const EditTweetPage = () => {
       if (tweetId) {
         try {
           const response = await findTweetById(Number(tweetId))
-          setTweet(response)
-          const { text, image } = response
-          setFormData({ text: text, image: image || "" })
+          if (user && user.id === response.user.id) {
+            setTweet(response)
+            setFormData({ text: response.text, image: response.image || "" })
+          } else {
+            return router.push("/")
+          }
         } catch (error) {
           console.error("ツイートの取得に失敗しました", error)
         }
@@ -42,7 +45,7 @@ const EditTweetPage = () => {
       setLoading(false)
     }
     fetchTweet()
-  }, [tweetId])
+  }, [tweetId, isLoading])
 
   const handleSubmit = async (formData: TweetFormData) => {
     try {
@@ -53,7 +56,7 @@ const EditTweetPage = () => {
     }
   }
 
-  if (loading) {
+  if (loading || isLoading) {
     return <div>Loading...</div>
   }
 
