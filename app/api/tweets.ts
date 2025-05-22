@@ -45,3 +45,14 @@ export const findTweetById = async (tweetId: number): Promise<TweetData> => {
     throw error
   }
 }
+
+export const deleteTweet = async (tweetId: number): Promise<void> => {
+  try {
+    api.post(`/tweets/${tweetId}/delete`);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('APIリクエストエラー:', error.response?.data);
+      throw new Error('ツイートの削除に失敗しました');
+    }
+  }
+}
