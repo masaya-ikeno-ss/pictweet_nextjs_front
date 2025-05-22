@@ -15,7 +15,7 @@ const Tweet = ({ tweet }: TweetProps) => {
         <span><img src="/images/arrow_top.png" alt="Arrow Top" /></span>
         <ul className="more_list">
           <li>
-          <Link href={`/`}>詳細</Link>
+          <Link href={`/tweets/${tweet.id}`}>詳細</Link>
           </li>
           { user?.isAuthenticated && user.id == tweet.user.id ? (
             <>
