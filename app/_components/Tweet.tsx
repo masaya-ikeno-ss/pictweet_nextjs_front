@@ -31,7 +31,7 @@ const Tweet = ({ tweet, onDeleteTweet }: TweetProps) => {
               </li>
               <li>
                 <form onSubmit={handleDelete}>
-                  <input type="submit" className="delete_btn" value="削除" />
+                  <input type="submit" className="delete-btn" value="削除" />
                 </form>
               </li>
             </>
