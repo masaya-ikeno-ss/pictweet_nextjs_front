@@ -41,7 +41,7 @@ const Tweet = ({ tweet, onDeleteTweet }: TweetProps) => {
 
       <p>{tweet.text}</p>
       <span className="name">
-        <Link href={`/`}>
+        <Link href={`/users/${tweet.user.id}`}>
           <span>投稿者</span><span>{tweet.user.nickname}</span>
         </Link>
       </span>
