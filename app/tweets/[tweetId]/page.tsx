@@ -62,7 +62,7 @@ const ShowTweetDetailPage = () => {
               <span><img src="/images/arrow_top.png" alt="Arrow Top" /></span>
               <ul className="more_list">
                 <li>
-                  <Link href={`/`} className="update-btn">編集</Link>
+                  <Link href={`/tweets/${tweet.id}/edit`} className="update-btn">編集</Link>
                 </li>
                 <li>
                   <form onSubmit={handleDelete}>
