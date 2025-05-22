@@ -18,12 +18,14 @@ const EditTweetPage = () => {
   const [tweet, setTweet] = useState<TweetData | null>(null)
   const [formData, setFormData] = useState<TweetFormData>({ text: "", image: "" })
   const [errorMessages, setErrorMessages] = useState<string[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
 
   const params = useParams()
   const tweetId = params.tweetId
 
   useEffect(() => {
     const fetchTweet = async () => {
+      setLoading(true)
       if (tweetId) {
         try {
           const response = await findTweetById(Number(tweetId))
@@ -34,12 +36,17 @@ const EditTweetPage = () => {
           console.error("ツイートの取得に失敗しました", error)
         }
       }
+      setLoading(false)
     }
     fetchTweet()
   }, [tweetId])
 
   const handleSubmit = async () => {
     // 編集ボタンを押したときの処理
+  }
+
+  if (loading) {
+    return <div>Loading...</div>
   }
 
   if (!tweet) {
