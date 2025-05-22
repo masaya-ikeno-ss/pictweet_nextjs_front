@@ -1,3 +1,4 @@
+import { CommentData } from "./CommentData"
 import { UserData } from "./UserData"
 
 export interface TweetData {
@@ -5,4 +6,5 @@ export interface TweetData {
   text: string
   image: string | null
   user: UserData
+  comments: CommentData[]
 }
